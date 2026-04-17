@@ -7,7 +7,9 @@
         <select name="paciente_id" class="form-select" required>
             <option value="">Seleccione paciente...</option>
             {% for p in pacientes %}
-            <option value="{{ p['id'] }}">{{ p['nombre'] }}</option>
+            <option value="{{ p['id'] }}">
+                {{ p['nombre'] }} ({{ p['numero_identidad'] }})
+            </option>
             {% endfor %}
         </select>
     </div>
@@ -16,7 +18,9 @@
         <select name="medico_id" class="form-select" required>
             <option value="">Seleccione médico...</option>
             {% for m in medicos %}
-            <option value="{{ m['id'] }}">{{ m['nombre'] }} - {{ m['especialidad'] }}</option>
+            <option value="{{ m['id'] }}">
+                {{ m['nombre'] }} - {{ m['especialidad'] }} ({{ m['numero_identidad'] }})
+            </option>
             {% endfor %}
         </select>
     </div>

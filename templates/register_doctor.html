@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Registrar Nuevo Médico</h2>
+<form method="POST">
+    <div class="mb-3">
+        <label class="form-label">Nombre del Médico</label>
+        <input type="text" name="nombre" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Especialidad</label>
+        <input type="text" name="especialidad" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Médico</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

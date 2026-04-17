@@ -21,6 +21,7 @@ def init_db():
     cur.execute('''
         CREATE TABLE IF NOT EXISTS pacientes (
             id SERIAL PRIMARY KEY,
+            numero_identidad VARCHAR(30) UNIQUE NOT NULL,
             nombre TEXT NOT NULL,
             edad INTEGER,
             ciudad TEXT,
@@ -29,6 +30,7 @@ def init_db():
 
         CREATE TABLE IF NOT EXISTS medicos (
             id SERIAL PRIMARY KEY,
+            numero_identidad VARCHAR(30) UNIQUE NOT NULL,
             nombre TEXT NOT NULL,
             especialidad TEXT NOT NULL,
             fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -64,7 +66,10 @@ def index():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('''
-        SELECT c.id, c.fecha, c.estado, p.nombre as paciente, m.nombre as medico, m.especialidad 
+        SELECT c.id, c.fecha, c.estado, 
+               p.nombre as paciente, p.numero_identidad as paciente_identidad,
+               m.nombre as medico, m.numero_identidad as medico_identidad, 
+               m.especialidad 
         FROM citas c
         JOIN pacientes p ON c.paciente_id = p.id
         JOIN medicos m ON c.medico_id = m.id
@@ -78,14 +83,17 @@ def index():
 @app.route('/register_patient', methods=['GET', 'POST'])
 def register_patient():
     if request.method == 'POST':
+        numero_identidad = request.form['numero_identidad']
         nombre = request.form['nombre']
         edad = int(request.form['edad'])
         ciudad = request.form['ciudad']
-        
+
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute('INSERT INTO pacientes (nombre, edad, ciudad) VALUES (%s, %s, %s)',
-                    (nombre, edad, ciudad))
+        cur.execute('''
+            INSERT INTO pacientes (numero_identidad, nombre, edad, ciudad) 
+            VALUES (%s, %s, %s, %s)
+        ''', (numero_identidad, nombre, edad, ciudad))
         conn.commit()
         cur.close()
         conn.close()
@@ -97,13 +105,16 @@ def register_patient():
 @app.route('/register_doctor', methods=['GET', 'POST'])
 def register_doctor():
     if request.method == 'POST':
+        numero_identidad = request.form['numero_identidad']
         nombre = request.form['nombre']
         especialidad = request.form['especialidad']
-        
+
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute('INSERT INTO medicos (nombre, especialidad) VALUES (%s, %s)',
-                    (nombre, especialidad))
+        cur.execute('''
+            INSERT INTO medicos (numero_identidad, nombre, especialidad) 
+            VALUES (%s, %s, %s)
+        ''', (numero_identidad, nombre, especialidad))
         conn.commit()
         cur.close()
         conn.close()
@@ -128,9 +139,9 @@ def new_appointment():
         flash('✅ Cita agendada correctamente', 'success')
         return redirect(url_for('index'))
 
-    cur.execute("SELECT * FROM pacientes ORDER BY nombre")
+    cur.execute("SELECT id, nombre, numero_identidad FROM pacientes ORDER BY nombre")
     pacientes = cur.fetchall()
-    cur.execute("SELECT * FROM medicos ORDER BY nombre")
+    cur.execute("SELECT id, nombre, numero_identidad, especialidad FROM medicos ORDER BY nombre")
     medicos = cur.fetchall()
     
     cur.close()
@@ -160,7 +171,6 @@ def finish_appointment(cita_id):
     cita = cur.fetchone()
     cur.close()
     conn.close()
-    
     return render_template('recommendations.html', cita=cita)
 
 if __name__ == '__main__':

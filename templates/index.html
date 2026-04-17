@@ -7,7 +7,9 @@
         <tr>
             <th>Fecha</th>
             <th>Paciente</th>
+            <th>ID Paciente</th>
             <th>Médico</th>
+            <th>ID Médico</th>
             <th>Especialidad</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -18,7 +20,9 @@
         <tr>
             <td>{{ cita['fecha'] }}</td>
             <td>{{ cita['paciente'] }}</td>
+            <td><strong>{{ cita['paciente_id'] }}</strong></td>
             <td>{{ cita['medico'] }}</td>
+            <td><strong>{{ cita['medico_id'] }}</strong></td>
             <td>{{ cita['especialidad'] }}</td>
             <td><span class="badge bg-{{ 'success' if cita['estado']=='Completada' else 'warning' }}">{{ cita['estado'] }}</span></td>
             <td>
@@ -28,7 +32,7 @@
             </td>
         </tr>
         {% else %}
-        <tr><td colspan="6" class="text-center py-4">No hay citas registradas todavía.</td></tr>
+        <tr><td colspan="8" class="text-center py-4">No hay citas registradas todavía.</td></tr>
         {% endfor %}
     </tbody>
 </table>

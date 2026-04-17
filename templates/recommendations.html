@@ -4,8 +4,8 @@
 
 <div class="card mb-4">
     <div class="card-body">
-        <h5>Paciente: {{ cita['paciente'] }}</h5>
-        <h5>Médico: {{ cita['medico'] }}</h5>
+        <h5>Paciente: {{ cita['paciente'] }} <small class="text-muted">({{ cita['paciente_id'] }})</small></h5>
+        <h5>Médico: {{ cita['medico'] }} <small class="text-muted">({{ cita['medico_id'] }})</small></h5>
         <p><strong>Fecha:</strong> {{ cita['fecha'] }}</p>
     </div>
 </div>
